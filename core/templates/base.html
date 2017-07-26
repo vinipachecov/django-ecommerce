@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 {% load static %}
-
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>{% block title %}Django E-Commerce {% endblock %}</title>
+	<title>{% block title %}Django E-Commerce{% endblock %}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<link rel="stylesheet" href="{% static 'assets/bootstrap.min.css' %}" media="screen" />
@@ -30,8 +29,8 @@
               <a class="dropdown-toggle" data-toggle="dropdown" href="{% url 'product_list' %}" id="download">Categorias <span class="caret"></span></a>
               <ul class="dropdown-menu" aria-labelledby="download">
                 <li><a href="{% url 'product_list' %}">Notebooks</a></li>
-								<li><a href="{% url 'product_list' %}">Acessórios</a></li>
-								<li><a href="{% url 'product_list' %}">Celulares</a></li>
+				<li><a href="{% url 'product_list' %}">Acessórios</a></li>
+				<li><a href="{% url 'product_list' %}">Celulares</a></li>
               </ul>
             </li>
 			<li>
@@ -45,11 +44,7 @@
       </div>
     </div>
     <div class="container">
-			{% block container %}
-
-			{% endblock %}
-
-
+		{% block container %}{% endblock %}
 		<footer>
 			<div class="row">
 			  <div class="col-lg-12">
@@ -65,6 +60,6 @@
 		</footer>
 	</div>
 	<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="{% static 'assets/bootstrap.min.js' %}></script>
+    <script src="{% static 'assets/bootstrap.min.js' %}"></script>
 </body>
 </html>
