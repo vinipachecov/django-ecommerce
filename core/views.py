@@ -15,23 +15,7 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
 
-# index = IndexView()
 index = IndexView.as_view()
-
-
-
-    #  se for fazer herança de IndexView(object):
-    # def __call__(self,request):
-    #     return render(request, 'index.html')
-
-
-
-    # def index(request):
-    #     context = {
-    #         'categories' : Category.objects.all()
-    #     }
-    #     return render(request, 'index.html', context)
-
 
 def contact(request):
     success = False
