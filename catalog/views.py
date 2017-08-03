@@ -12,7 +12,7 @@ class ProductListView(generic.ListView):
     model = Product
     template_name = 'catalog/product_list.html'
     context_object_name = 'products'
-
+    paginate_by = 3
 
 # def product_list(request):
 #     context = {
@@ -25,6 +25,7 @@ class CategoryListView(generic.ListView):
 
     template_name = 'catalog/category.html'
     context_object_name = 'product_list'
+    paginate_by = 3
 
     def get_queryset(self):
         # verifica se existe uma variavel chamada model
