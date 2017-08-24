@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # apps
     'core',
     'catalog',
+    'accounts',
     # libs
     'widget_tweaks',
 ]
@@ -147,6 +149,14 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 
 DEFAULT_FROM_EMAIL = 'vinipachecov@gmail.com'
+
+# auth
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_URL = 'logout'
+AUTH_USER_MODEL = 'accounts.User'
+
+
 
 try:
     from .local_settings import *
