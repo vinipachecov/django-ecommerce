@@ -36,13 +36,3 @@ def contact(request):
 
 def product_list(request):
     return render(request, 'product_list.html')
-
-
-class RegisterView(CreateView):
-
-    form_class = UserCreationForm
-    template_name = 'register.html'
-    model = User
-    success_url = reverse_lazy('index')
-
-register = RegisterView.as_view()
