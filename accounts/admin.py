@@ -1,20 +1,12 @@
-
-
+# coding=utf-8
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-# Register your models here.
-
-# importar o modelo do nosso usuário criado
 from .models import User
-
-# Importando o tipo de formulario que criamos em accounts.forms.py
 from .forms import UserAdminCreationForm, UserAdminForm
 
 
-
-#  configurações do admin para o usuárioem nossa nova app accounts -> USER
 class UserAdmin(BaseUserAdmin):
 
     add_form = UserAdminCreationForm
@@ -41,7 +33,6 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     list_display = ['username', 'name', 'email', 'is_active', 'is_staff', 'date_joined']
-
 
 
 admin.site.register(User, UserAdmin)

@@ -1,13 +1,12 @@
+# coding=utf-8
 
 import re
+
 from django.db import models
 from django.core import validators
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
-# Create your models here.
 
-#Criando nosso próprio Tipo de usuário
 
-#Python permite herança multipla
 class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(
@@ -19,7 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                 'e os caracteres: @/./+/-/_ .'
                 , 'invalid'
             )
-        ], help_text = 'Um nome curto que será usado para identificá0lo de forma única na plataforma'
+        ], help_text='Um nome curto que será usado para identificá-lo de forma única na plataforma'
     )
     name = models.CharField('Nome', max_length=100, blank=True)
     email = models.EmailField('E-mail', unique=True)

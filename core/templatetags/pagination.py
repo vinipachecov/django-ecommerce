@@ -1,13 +1,10 @@
 # coding=utf-8
 
-
-# Criar paginacao de qualquer objeto
-
-
 from django.template import Library
 
-# registrar a biblioteca de templates
+
 register = Library()
+
 
 @register.inclusion_tag('pagination.html')
 def pagination(request, paginator, page_obj):

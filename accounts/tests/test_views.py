@@ -1,41 +1,41 @@
 # coding=utf-8
 
-
 from django.test import Client, TestCase
-
 from django.core.urlresolvers import reverse
-from model_mommy import mommy
 from django.conf import settings
 
+from model_mommy import mommy
+
 from accounts.models import User
+
 
 class RegisterViewTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.register_url = reverse ('accounts:register')
+        self.register_url = reverse('accounts:register')
 
     def test_register_ok(self):
         data = {
-            'username': 'fulano','password1':'fu123456', 'password2' :'fu123456',
-            'email': 'fulano@gmail.com'
-            }
+            'username': 'gileno', 'password1': 'teste123', 'password2': 'teste123',
+            'email': 'test@test.com'
+        }
         response = self.client.post(self.register_url, data)
         index_url = reverse('index')
         self.assertRedirects(response, index_url)
         self.assertEquals(User.objects.count(), 1)
 
     def test_register_error(self):
-        data = {'username': 'gileno','password1':'teste123', 'password2' :'teste123'}
+        data = {'username': 'gileno', 'password1': 'teste123', 'password2': 'teste123'}
         response = self.client.post(self.register_url, data)
-        self.assertFormError(response,'form','email','Este campo é obrigatório.')
+        self.assertFormError(response, 'form', 'email', 'Este campo é obrigatório.')
+
 
 class UpdateUserTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
         self.url = reverse('accounts:update_user')
-        # vou setar manualmente a senha dele
         self.user = mommy.prepare(settings.AUTH_USER_MODEL)
         self.user.set_password('123')
         self.user.save()
@@ -44,10 +44,9 @@ class UpdateUserTestCase(TestCase):
         self.user.delete()
 
     def test_update_user_ok(self):
-        data = {'name': 'test', 'email' : 'test@test.com'}
-        # testar se será redirecionado pois o usuário precisa estar logado
+        data = {'name': 'test', 'email': 'test@test.com'}
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code,302)
+        self.assertEquals(response.status_code, 302)
         self.client.login(username=self.user.username, password='123')
         response = self.client.post(self.url, data)
         accounts_index_url = reverse('accounts:index')
@@ -56,12 +55,12 @@ class UpdateUserTestCase(TestCase):
         self.assertEquals(self.user.email, 'test@test.com')
         self.assertEquals(self.user.name, 'test')
 
-
     def test_update_user_error(self):
-        data = { }
+        data = {}
         self.client.login(username=self.user.username, password='123')
         response = self.client.post(self.url, data)
         self.assertFormError(response, 'form', 'email', 'Este campo é obrigatório.')
+
 
 class UpdatePasswordTestCase(TestCase):
 
@@ -76,8 +75,10 @@ class UpdatePasswordTestCase(TestCase):
         self.user.delete()
 
     def test_update_password_ok(self):
-        data = {'old_password':'123', 'new_password1': 'test123456', 'new_password2' : 'test123456'}
+        data = {
+            'old_password': '123', 'new_password1': 'teste123', 'new_password2': 'teste123'
+        }
         self.client.login(username=self.user.username, password='123')
         response = self.client.post(self.url, data)
         self.user.refresh_from_db()
-        self.assertTrue(self.user.check_password('test123456'))
+        self.assertTrue(self.user.check_password('teste123'))

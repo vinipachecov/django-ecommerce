@@ -22,11 +22,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = '-uhpfb-=5&l!s0h5sn8*(3a^slvqng24z7b$0yt!a8w+2*$m9#'
 SECRET_KEY = os.getenv('SECRET_KEY', '123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -40,12 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # apps
-    'core',
-    'catalog',
-    'accounts',
     # libs
     'widget_tweaks',
+    # apps
+    'core',
+    'accounts',
+    'catalog',
+    'checkout',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -74,7 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # apps
-                'catalog.context_processor.categories'
+                'catalog.context_processors.categories',
             ],
         },
     },
@@ -126,8 +126,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
 
@@ -140,15 +140,11 @@ ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
-
 # E-mail
 EMAIL_HOST = ''
-
 EMAIL_HOST_USER = ''
-
 EMAIL_HOST_PASSWORD = ''
-
-DEFAULT_FROM_EMAIL = 'vinipachecov@gmail.com'
+DEFAULT_FROM_EMAIL = 'admin@djangoecommerce.com'
 
 # auth
 LOGIN_URL = 'login'
@@ -156,11 +152,19 @@ LOGIN_REDIRECT_URL = 'index'
 LOGOUT_URL = 'logout'
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = (
-     'django.contrib.auth.backends.ModelBackend',
-     'accounts.backends.ModelBackend',
- )
+    'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.ModelBackend',
+)
 
-
+# Messages
+from django.contrib.messages import constants as messages_constants
+MESSAGE_TAGS = {
+    messages_constants.DEBUG: 'debug',
+    messages_constants.INFO: 'info',
+    messages_constants.SUCCESS: 'success',
+    messages_constants.WARNING: 'warning',
+    messages_constants.ERROR: 'danger',
+}
 
 try:
     from .local_settings import *
