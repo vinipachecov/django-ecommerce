@@ -21,7 +21,6 @@ from django.contrib.auth.views import login, logout
 
 from core import views
 
-
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^contato/$', views.contact, name='contact'),

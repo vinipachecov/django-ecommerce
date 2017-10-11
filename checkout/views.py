@@ -1,18 +1,20 @@
 # coding=utf-8
 
-from django.shortcuts import get_object_or_404
-from django.views.generic import RedirectView, TemplateView
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import RedirectView, TemplateView, ListView, DetailView
 from django.forms import modelformset_factory
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
-from catalog.models import Product
-from .models import CartItem
 
-# need a redirect url
+from catalog.models import Product
+
+from .models import CartItem, Order
+
+
 class CreateCartItemView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
-        # get the product
         product = get_object_or_404(Product, slug=self.kwargs['slug'])
         if self.request.session.session_key is None:
             self.request.session.save()
@@ -20,12 +22,10 @@ class CreateCartItemView(RedirectView):
             self.request.session.session_key, product
         )
         if created:
-            messages.success(self.request, 'Produto adicionado com suesso')
+            messages.success(self.request, 'Produto adicionado com sucesso')
         else:
-            messages.success(self.request, 'Produto atualizado com suesso')
+            messages.success(self.request, 'Produto atualizado com sucesso')
         return reverse('checkout:cart_item')
-
-        # django does not have redirect for formset
 
 
 class CartItemView(TemplateView):
@@ -39,12 +39,12 @@ class CartItemView(TemplateView):
         session_key = self.request.session.session_key
         if session_key:
             if clear:
-                # doesn't have a post because we want to clear
                 formset = CartItemFormSet(
-                queryset=CartItem.objects.filter(cart_key=session_key))
+                    queryset=CartItem.objects.filter(cart_key=session_key)
+                )
             else:
                 formset = CartItemFormSet(
-                queryset=CartItem.objects.filter(cart_key=session_key),
+                    queryset=CartItem.objects.filter(cart_key=session_key),
                     data=self.request.POST or None
                 )
         else:
@@ -56,18 +56,74 @@ class CartItemView(TemplateView):
         context['formset'] = self.get_formset()
         return context
 
-    # submission of my formset
-    def post(self,request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         formset = self.get_formset()
         context = self.get_context_data(**kwargs)
         if formset.is_valid():
             formset.save()
             messages.success(request, 'Carrinho atualizado com sucesso')
-            # update the cart items in case the user deletes withouth a redirect
             context['formset'] = self.get_formset(clear=True)
-
         return self.render_to_response(context)
+
+
+class CheckoutView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'checkout/checkout.html'
+
+    def get(self, request, *args, **kwargs):
+        session_key = request.session.session_key
+        if session_key and CartItem.objects.filter(cart_key=session_key).exists():
+            cart_items = CartItem.objects.filter(cart_key=session_key)
+            order = Order.objects.create_order(
+                user=request.user, cart_items=cart_items
+            )
+        else:
+            messages.info(request, 'Não há itens no carrinho de compras')
+            return redirect('checkout:cart_item')
+        response = super(CheckoutView, self).get(request, *args, **kwargs)
+        response.context_data['order'] = order
+        return response
+
+class OrderListView(LoginRequiredMixin, ListView):
+
+    # listview need some information about what
+    # we are about to list
+    template_name = 'checkout/order_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+
+class OrderDetailView(LoginRequiredMixin,DetailView):
+    model = Order
+    template_name = 'checkout/order_detail.html'
+
+    def get_queryset(self):
+        # filter the orders based on this query set
+        return Order.objects.filter(user=self.request.user)
+
+
+class PagSeguroView(LoginRequiredMixin, RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        order_pk = self.kwargs.get('pk')
+        order = get_object_or_404(
+            Order.objects.filter(user=self.request.user), pk=order_pk
+        )
+        pg = order.pagseguro()
+        pg.redirect_url = self.request.build_absolute_uri(
+            reverse('checkout:order_detail', args=[order.pk])
+        )
+        response = pg.checkout()
+        print('RESPONSE {}'.format(response))
+        print('payment_url = {}'.format(response.payment_url))
+        return response.payment_url
 
 
 create_cartitem = CreateCartItemView.as_view()
 cart_item = CartItemView.as_view()
+checkout = CheckoutView.as_view()
+order_list = OrderListView.as_view()
+order_detail = OrderDetailView.as_view()
+pagseguro_view = PagSeguroView.as_view()
