@@ -117,6 +117,7 @@ class PagSeguroView(LoginRequiredMixin, RedirectView):
         )
         response = pg.checkout()
         print('RESPONSE {}'.format(response))
+        print('redirect_url = {}'.format(pg.redirect_url))
         print('payment_url = {}'.format(response.payment_url))
         return response.payment_url
 

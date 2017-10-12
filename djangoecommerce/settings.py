@@ -1,3 +1,4 @@
+
 """
 Django settings for djangoecommerce project.
 
@@ -167,7 +168,7 @@ MESSAGE_TAGS = {
     messages_constants.ERROR: 'danger',
 }
 
-PAGSEGURO_TOKEN = ''
+PAGSEGURO_TOKEN = '77F0880C5B0A4931BA27AF4F674A4D63'
 PAGSEGURO_EMAIL = 'vinipachecov@gmail.com'
 PAGSEGURO_SANDBOX = True
 

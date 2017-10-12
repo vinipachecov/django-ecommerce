@@ -108,17 +108,23 @@ class Order(models.Model):
         return aggregate_queryset['total']
 
     def pagseguro(self):
+        self.payment_option = 'pagseguro'
+        self.save()
         pg = PagSeguro(
             email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,
             config={'sandbox': settings.PAGSEGURO_SANDBOX}
         )
+        # print('useremail = {} PAGSEGURO_TOKEN = {}, PAGSEGURO_EMAIL = {}'.format(self.user.email,
+        #     settings.PAGSEGURO_TOKEN, settings.PAGSEGURO_EMAIL))
         pg.sender = {
             'email' : self.user.email
         }
         pg.reference_prefix = None
         pg.shipping = None
         pg.reference = self.pk
+        print('self.pk = {}'.format(self.pk))
         for item in self.items.all():
+            print(item.product.name)
             pg.items.append(
                 {
                     'id': item.product.pk,

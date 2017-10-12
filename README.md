@@ -4,6 +4,6 @@ Projeto didático utilizado para meu curso de Django  - Construa um Ecommerce co
 
 #Dados do Projeto
 
-* Django 1.9.6
+* Django 1.10
 * Python 3.5.2
 * Site para testes em http://vini-ecommerce.herokuapp.com/
