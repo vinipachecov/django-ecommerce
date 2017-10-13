@@ -6,3 +6,4 @@ model_mommy==1.2.6
 whitenoise==3.2
 django-widget-tweaks==1.4.1
 pagseguro==0.3.2
+paypal==1.2.5
