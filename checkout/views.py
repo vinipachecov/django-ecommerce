@@ -1,5 +1,8 @@
 # coding=utf-8
 
+
+from paypal.standard.forms import PayPalPaymentsForm
+
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import RedirectView, TemplateView, ListView, DetailView
 from django.forms import modelformset_factory
@@ -116,10 +119,31 @@ class PagSeguroView(LoginRequiredMixin, RedirectView):
             reverse('checkout:order_detail', args=[order.pk])
         )
         response = pg.checkout()
-        print('RESPONSE {}'.format(response))
-        print('redirect_url = {}'.format(pg.redirect_url))
-        print('payment_url = {}'.format(response.payment_url))
+        print('response errors {}'.format(response.errors))
+        print('response code {}'.format(response.code))
+        print('response payment_url {}'.format(response.payment_url))
         return response.payment_url
+
+class PaypalView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'checkout/paypal.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PaypalView, self).get_context_data(**kwargs)
+        order_pk = self.kwargs.get('pk')
+        # get the current items related to this user and order primary key
+        order = get_object_or_404(
+            Order.objects.filter(user=self.request.user), pk=order_pk
+        )
+        paypal_dict = order.paypal()
+        paypal_dict['return_url'] = self.request.build_absolute_uri(
+            reverse('checkout:order_list')
+        )
+        paypal_dict['cancel_return'] = self.request.build_absolute_uri(
+            reverse('checkout:order_list')
+        )
+        context['form'] = PayPalPaymentsForm(initial=paypal_dict)
+        return context
 
 
 create_cartitem = CreateCartItemView.as_view()
@@ -128,3 +152,4 @@ checkout = CheckoutView.as_view()
 order_list = OrderListView.as_view()
 order_detail = OrderDetailView.as_view()
 pagseguro_view = PagSeguroView.as_view()
+paypal_view = PaypalView.as_view()
