@@ -1,4 +1,3 @@
-
 """
 Django settings for djangoecommerce project.
 
@@ -26,14 +25,14 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = os.getenv('SECRET_KEY', '123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
-INSTALLED_APPS = [  
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,8 +45,8 @@ INSTALLED_APPS = [
     # apps
     'core',
     'accounts',
-    'catalog',
-    'checkout',
+    'catalog',    
+    'checkout'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     'checkout.middleware.cart_item_middleware',
 ]
 

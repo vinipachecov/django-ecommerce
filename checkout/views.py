@@ -1,19 +1,22 @@
 # coding=utf-8
 
-
-from paypal.standard.forms import PayPalPaymentsForm
+from pagseguro import PagSeguro
 
 from paypal.standard.forms import PayPalPaymentsForm
 from paypal.standard.models import ST_PP_COMPLETED
 from paypal.standard.ipn.signals import valid_ipn_received
 
-from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import RedirectView, TemplateView, ListView, DetailView
+from django.views.generic import (
+    RedirectView, TemplateView, ListView, DetailView
+)
 from django.forms import modelformset_factory
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.http import HttpResponse
 
 from catalog.models import Product
 
@@ -92,10 +95,9 @@ class CheckoutView(LoginRequiredMixin, TemplateView):
         response.context_data['order'] = order
         return response
 
+
 class OrderListView(LoginRequiredMixin, ListView):
 
-    # listview need some information about what
-    # we are about to list
     template_name = 'checkout/order_list.html'
     paginate_by = 10
 
@@ -103,12 +105,11 @@ class OrderListView(LoginRequiredMixin, ListView):
         return Order.objects.filter(user=self.request.user)
 
 
-class OrderDetailView(LoginRequiredMixin,DetailView):
-    model = Order
+class OrderDetailView(LoginRequiredMixin, DetailView):
+
     template_name = 'checkout/order_detail.html'
 
     def get_queryset(self):
-        # filter the orders based on this query set
         return Order.objects.filter(user=self.request.user)
 
 
@@ -123,11 +124,12 @@ class PagSeguroView(LoginRequiredMixin, RedirectView):
         pg.redirect_url = self.request.build_absolute_uri(
             reverse('checkout:order_detail', args=[order.pk])
         )
+        pg.notification_url = self.request.build_absolute_uri(
+            reverse('checkout:pagseguro_notification')
+        )
         response = pg.checkout()
-        print('response errors {}'.format(response.errors))
-        print('response code {}'.format(response.code))
-        print('response payment_url {}'.format(response.payment_url))
         return response.payment_url
+
 
 class PaypalView(LoginRequiredMixin, TemplateView):
 
@@ -136,7 +138,6 @@ class PaypalView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PaypalView, self).get_context_data(**kwargs)
         order_pk = self.kwargs.get('pk')
-        # get the current items related to this user and order primary key
         order = get_object_or_404(
             Order.objects.filter(user=self.request.user), pk=order_pk
         )
@@ -153,17 +154,40 @@ class PaypalView(LoginRequiredMixin, TemplateView):
         context['form'] = PayPalPaymentsForm(initial=paypal_dict)
         return context
 
+
+@csrf_exempt
+def pagseguro_notification(request):
+    notification_code = request.POST.get('notificationCode', None)
+    if notification_code:
+        pg = PagSeguro(
+            email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,
+            config={'sandbox': settings.PAGSEGURO_SANDBOX}
+        )
+        notification_data = pg.check_notification(notification_code)
+        status = notification_data.status
+        reference = notification_data.reference
+        try:
+            order = Order.objects.get(pk=reference)
+        except Order.DoesNotExist:
+            pass
+        else:
+            order.pagseguro_update_status(status)
+    return HttpResponse('OK')
+
+
 def paypal_notification(sender, **kwargs):
     ipn_obj = sender
     if ipn_obj.payment_status == ST_PP_COMPLETED and \
-       ipn_obj.receiver_email == settings.PAYPAL_EMAIL:
-       try:
-           order = Order.objects.get(pk=ipn_obj.invoice)
-           order.complete()
-       except Order.DoesNotExist:
-           pass
+        ipn_obj.receiver_email == settings.PAYPAL_EMAIL:
+        try:
+            order = Order.objects.get(pk=ipn_obj.invoice)
+            order.complete()
+        except Order.DoesNotExist:
+            pass
+
 
 valid_ipn_received.connect(paypal_notification)
+
 
 create_cartitem = CreateCartItemView.as_view()
 cart_item = CartItemView.as_view()

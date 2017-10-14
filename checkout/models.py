@@ -19,29 +19,26 @@ class CartItemManager(models.Manager):
         else:
             created = True
             cart_item = CartItem.objects.create(
-            cart_key=cart_key, product=product, price=product.price
+                cart_key=cart_key, product=product, price=product.price
             )
-
-        # cart_item, created = self.get_or_create(cart_key=cart_key, product= product)
         return cart_item, created
-
 
 
 class CartItem(models.Model):
 
     cart_key = models.CharField(
-                'Chave do Carrinho', max_length=40, db_index=True
-                )
+        'Chave do Carrinho', max_length=40, db_index=True
+    )
     product = models.ForeignKey('catalog.Product', verbose_name='Produto')
     quantity = models.PositiveIntegerField('Quantidade', default=1)
-    price = models.DecimalField('Preço',max_digits=8, decimal_places=2)
+    price = models.DecimalField('Preço', decimal_places=2, max_digits=8)
 
     objects = CartItemManager()
 
     class Meta:
         verbose_name = 'Item do Carrinho'
         verbose_name_plural = 'Itens dos Carrinhos'
-        unique_together = (('cart_key', 'product'), )
+        unique_together = (('cart_key', 'product'),)
 
     def __str__(self):
         return '{} [{}]'.format(self.product, self.quantity)
@@ -53,9 +50,8 @@ class OrderManager(models.Manager):
         order = self.create(user=user)
         for cart_item in cart_items:
             order_item = OrderItem.objects.create(
-                order=order, quantity=cart_item.quantity,
-                product=cart_item.product,
-                price= cart_item.price
+                order=order, quantity=cart_item.quantity, product=cart_item.product,
+                price=cart_item.price
             )
         return order
 
@@ -70,7 +66,7 @@ class Order(models.Model):
 
     PAYMENT_OPTION_CHOICES = (
         ('deposit', 'Depósito'),
-        ('pagseguro', 'Pagseguro'),
+        ('pagseguro', 'PagSeguro'),
         ('paypal', 'Paypal'),
     )
 
@@ -79,16 +75,17 @@ class Order(models.Model):
         'Situação', choices=STATUS_CHOICES, default=0, blank=True
     )
     payment_option = models.CharField(
-        'Opção de pagamento', choices=PAYMENT_OPTION_CHOICES, max_length=20,
+        'Opção de Pagamento', choices=PAYMENT_OPTION_CHOICES, max_length=20,
         default='deposit'
     )
-    created = models.DateTimeField('Criado em ', auto_now_add=True)
-    modified = models.DateTimeField('Modificado em', auto_now_add=True)
+
+    created = models.DateTimeField('Criado em', auto_now_add=True)
+    modified = models.DateTimeField('Modificado em', auto_now=True)
 
     objects = OrderManager()
 
     class Meta:
-        verbose_name ='Pedido'
+        verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
 
     def __str__(self):
@@ -107,24 +104,29 @@ class Order(models.Model):
         )
         return aggregate_queryset['total']
 
-    def pagseguro(self):
-        self.payment_option = 'pagseguro'
+    def pagseguro_update_status(self, status):
+        if status == '3':
+            self.status = 1
+        elif status == '7':
+            self.status = 2
         self.save()
+
+    def complete(self):
+        self.status = 1
+        self.save()
+
+    def pagseguro(self):
         pg = PagSeguro(
             email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,
             config={'sandbox': settings.PAGSEGURO_SANDBOX}
         )
-        # print('useremail = {} PAGSEGURO_TOKEN = {}, PAGSEGURO_EMAIL = {}'.format(self.user.email,
-        #     settings.PAGSEGURO_TOKEN, settings.PAGSEGURO_EMAIL))
         pg.sender = {
-            'email' : self.user.email
+            'email': self.user.email
         }
-        pg.reference_prefix = None
+        pg.reference_prefix = ''
         pg.shipping = None
         pg.reference = self.pk
-        print('self.pk = {}'.format(self.pk))
         for item in self.items.all():
-            print(item.product.name)
             pg.items.append(
                 {
                     'id': item.product.pk,
@@ -153,33 +155,25 @@ class Order(models.Model):
         return paypal_dict
 
 
-
-
 class OrderItem(models.Model):
+
     order = models.ForeignKey(Order, verbose_name='Pedido', related_name='items')
     product = models.ForeignKey('catalog.Product', verbose_name='Produto')
     quantity = models.PositiveIntegerField('Quantidade', default=1)
-    price = models.DecimalField('Preço',max_digits=8, decimal_places=2)
+    price = models.DecimalField('Preço', decimal_places=2, max_digits=8)
 
     class Meta:
         verbose_name = 'Item do pedido'
-        verbose_name_plural = 'Itens dos Pedidos'
+        verbose_name_plural = 'Itens dos pedidos'
 
     def __str__(self):
-        return '[{}] Produto'.format(self.order.pk, self.product)
+        return '[{}] {}'.format(self.order, self.product)
 
 
-
-        # products = []
-        # for item in self.items.all():
-        #     # get all products from orderitem
-        #     products.append(item.product)
-        # return products
-
-# delete the item in the cart if the user lower the value below 1
 def post_save_cart_item(instance, **kwargs):
     if instance.quantity < 1:
         instance.delete()
+
 
 models.signals.post_save.connect(
     post_save_cart_item, sender=CartItem, dispatch_uid='post_save_cart_item'
