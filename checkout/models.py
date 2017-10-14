@@ -136,6 +136,8 @@ class Order(models.Model):
         return pg
 
     def paypal(self):
+        self.payment_option = 'paypal'
+        self.save()
         paypal_dict = {
             'upload': '1',
             'business': settings.PAYPAL_EMAIL,
