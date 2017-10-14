@@ -26,14 +26,14 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = os.getenv('SECRET_KEY', '123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS = [  
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
