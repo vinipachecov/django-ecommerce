@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     # apps
     'core',
     'accounts',
-    'catalog',    
-    'checkout'
+    'catalog',
+    'checkout',
 ]
 
 MIDDLEWARE = [
@@ -134,14 +134,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+MEDIA_URL = '/media/'
 
 ALLOWED_HOSTS = ['*']
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # E-mail
 EMAIL_HOST = ''
@@ -173,11 +172,8 @@ PAGSEGURO_TOKEN = ''
 PAGSEGURO_EMAIL = 'vinipachecov@gmail.com'
 PAGSEGURO_SANDBOX = True
 
-
 PAYPAL_TEST = True
 PAYPAL_EMAIL = 'vinipachecov@gmail.com'
-
-
 
 try:
     from .local_settings import *
