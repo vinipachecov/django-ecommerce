@@ -3,16 +3,16 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Carrinho de Compras
+Shopping Cart
 {% endblock %}
 
 {% block container %}
 <ol class="breadcrumb">
-  <li><a href="{% url 'index' %}">Início</a></li>
-  <li class="active">Carrinho de Compras</li>
+  <li><a href="{% url 'index' %}">Home</a></li>
+  <li class="active">Item Cart</li>
 </ol>
 <div class="page-header">
-<h1>Carrinho de Compras</h1>
+<h1>Item Cart</h1>
 </div>
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -25,13 +25,13 @@ Carrinho de Compras
                         ID
                     </th>
                     <th>
-                        Nome
+                        Name
                     </th>
       <th>
-                        Preço
+                        Pice
                     </th>
                     <th style="width: 10%;">
-                        Quantidade
+                        Quantity
                     </th>
       <th>
 
@@ -55,7 +55,7 @@ Carrinho de Compras
                         </td>
                           <td class="text-center">
                             <button value="on" type="submit" name="{{ form.DELETE.html_name }}"
-                            class="btn btn-danger btn-sm">remover</button>
+                            class="btn btn-danger btn-sm">remove</button>
                             {{ form.id }}
                           </td>
                     </tr>
@@ -63,9 +63,9 @@ Carrinho de Compras
                 </tbody>
             </table>
             <p class="text-right">
-    <a href="{% url 'catalog:product_list'  %}" class="pull-left btn btn-default">Continuar Compras</a>
-    <button type="submit" class="btn btn-primary" name="button">Atualizar Carrinho</button></li>
-    <a href="{% url 'checkout:checkout' %}" class="btn btn-success">Finalizar Compra</a>
+    <a href="{% url 'catalog:product_list'  %}" class="pull-left btn btn-default">Keep buying</a>
+    <button type="submit" class="btn btn-primary" name="button">Update Cart</button></li>
+    <a href="{% url 'checkout:checkout' %}" class="btn btn-success">Go to checkout</a>
             </p>
         </form>
     </div>

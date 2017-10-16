@@ -25,12 +25,12 @@ from core import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^contato/$', views.contact, name='contact'),
-    url(r'^entrar/$', login, {'template_name': 'login.html'}, name='login'),
-    url(r'^sair/$', logout, {'next_page': 'index'}, name='logout'),
-    url(r'^catalogo/', include('catalog.urls', namespace='catalog')),
-    url(r'^conta/', include('accounts.urls', namespace='accounts')),
-    url(r'^compras/', include('checkout.urls', namespace='checkout')),
+    url(r'^contact/$', views.contact, name='contact'),
+    url(r'^login/$', login, {'template_name': 'login.html'}, name='login'),
+    url(r'^logout/$', logout, {'next_page': 'index'}, name='logout'),
+    url(r'^catalog/', include('catalog.urls', namespace='catalog')),
+    url(r'^account/', include('accounts.urls', namespace='accounts')),
+    url(r'^my-orders/', include('checkout.urls', namespace='checkout')),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
     url(r'^admin/', admin.site.urls),
 ]

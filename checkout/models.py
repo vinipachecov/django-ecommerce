@@ -30,17 +30,17 @@ class CartItemManager(models.Manager):
 class CartItem(models.Model):
 
     cart_key = models.CharField(
-                'Chave do Carrinho', max_length=40, db_index=True
+                'Cart Key', max_length=40, db_index=True
                 )
-    product = models.ForeignKey('catalog.Product', verbose_name='Produto')
-    quantity = models.PositiveIntegerField('Quantidade', default=1)
-    price = models.DecimalField('Preço',max_digits=8, decimal_places=2)
+    product = models.ForeignKey('catalog.Product', verbose_name='Product')
+    quantity = models.PositiveIntegerField('Quantity', default=1)
+    price = models.DecimalField('Price',max_digits=8, decimal_places=2)
 
     objects = CartItemManager()
 
     class Meta:
-        verbose_name = 'Item do Carrinho'
-        verbose_name_plural = 'Itens dos Carrinhos'
+        verbose_name = 'Cart item'
+        verbose_name_plural = 'Cart items'
         unique_together = (('cart_key', 'product'), )
 
     def __str__(self):
@@ -63,36 +63,36 @@ class OrderManager(models.Manager):
 class Order(models.Model):
 
     STATUS_CHOICES = (
-        (0, 'Aguardando Pagamento'),
-        (1, 'Concluída'),
-        (2, 'Cancelada'),
+        (0, 'Waiting Payment'),
+        (1, 'Confirmed'),
+        (2, 'Canceled'),
     )
 
     PAYMENT_OPTION_CHOICES = (
-        ('deposit', 'Depósito'),
+        ('deposit', 'Deposit'),
         ('pagseguro', 'Pagseguro'),
         ('paypal', 'Paypal'),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Usuário')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='user')
     status = models.IntegerField(
-        'Situação', choices=STATUS_CHOICES, default=0, blank=True
+        'status', choices=STATUS_CHOICES, default=0, blank=True
     )
     payment_option = models.CharField(
-        'Opção de pagamento', choices=PAYMENT_OPTION_CHOICES, max_length=20,
+        'Payment option', choices=PAYMENT_OPTION_CHOICES, max_length=20,
         default='deposit'
     )
-    created = models.DateTimeField('Criado em ', auto_now_add=True)
-    modified = models.DateTimeField('Modificado em', auto_now_add=True)
+    created = models.DateTimeField('Create in ', auto_now_add=True)
+    modified = models.DateTimeField('Modified in ', auto_now_add=True)
 
     objects = OrderManager()
 
     class Meta:
-        verbose_name ='Pedido'
-        verbose_name_plural = 'Pedidos'
+        verbose_name ='Order'
+        verbose_name_plural = 'Orders'
 
     def __str__(self):
-        return 'Pedido #{}'.format(self.pk)
+        return 'Order #{}'.format(self.pk)
 
     def products(self):
         products_ids = self.items.values_list('product')
@@ -158,17 +158,17 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, verbose_name='Pedido', related_name='items')
-    product = models.ForeignKey('catalog.Product', verbose_name='Produto')
-    quantity = models.PositiveIntegerField('Quantidade', default=1)
-    price = models.DecimalField('Preço',max_digits=8, decimal_places=2)
+    order = models.ForeignKey(Order, verbose_name='Order', related_name='items')
+    product = models.ForeignKey('catalog.Product', verbose_name='Produtc')
+    quantity = models.PositiveIntegerField('Quantity', default=1)
+    price = models.DecimalField('Price',max_digits=8, decimal_places=2)
 
     class Meta:
-        verbose_name = 'Item do pedido'
-        verbose_name_plural = 'Itens dos Pedidos'
+        verbose_name = 'Order item'
+        verbose_name_plural = 'Order items'
 
     def __str__(self):
-        return '[{}] Produto'.format(self.order.pk, self.product)
+        return '[{}] Product'.format(self.order.pk, self.product)
 
 
 

@@ -10,21 +10,21 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager, Permission
 class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(
-        'Apelido / Usuário', max_length=30, unique=True, validators=[
+        'Nick / User', max_length=30, unique=True, validators=[
             validators.RegexValidator(
                 re.compile('^[\w.@+-]+$'),
-                'Informe um nome de usuário válido. '
-                'Este valor deve conter apenas letras, números '
-                'e os caracteres: @/./+/-/_ .'
+                'Use a valid username. '
+                'It must have only letters, numbers'
+                'and the characters: @/./+/-/_ .'
                 , 'invalid'
             )
-        ], help_text='Um nome curto que será usado para identificá-lo de forma única na plataforma'
+        ], help_text='A nickname will be used to identify you in the platform'
     )
-    name = models.CharField('Nome', max_length=100, blank=True)
+    name = models.CharField('Name', max_length=100, blank=True)
     email = models.EmailField('E-mail', unique=True)
-    is_staff = models.BooleanField('Equipe', default=False)
-    is_active = models.BooleanField('Ativo', default=True)
-    date_joined = models.DateTimeField('Data de Entrada', auto_now_add=True)
+    is_staff = models.BooleanField('Staff', default=False)
+    is_active = models.BooleanField('Active', default=True)
+    date_joined = models.DateTimeField('Joined in', auto_now_add=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -32,8 +32,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     class Meta:
-        verbose_name = 'Usuário'
-        verbose_name_plural = 'Usuários'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 
     def __str__(self):
         return self.name or self.username
