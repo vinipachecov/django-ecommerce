@@ -85,7 +85,7 @@ class CheckoutView(LoginRequiredMixin, TemplateView):
             order = Order.objects.create_order(
                 user=request.user, cart_items=cart_items
             )
-            cart_item.delete()
+            cart_items.delete()
         else:
             messages.info(request, 'Não há itens no carrinho de compras')
             return redirect('checkout:cart_item')
