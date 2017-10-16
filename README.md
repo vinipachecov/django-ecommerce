@@ -7,7 +7,6 @@ Project used during the Udemy Course - Construa um Ecommerce com Python 3 e Djan
 * Python 3.5.2
 
 # App information
-* Testing Site http://vini-ecommerce.herokuapp.com/
-* AWS deploy at http://54.160.182.187/ (maybe offline)
+* Testing Site http://vini-ecommerce.herokuapp.com/  
 * Nginx and supervisor for running in the EC2 instance
 
