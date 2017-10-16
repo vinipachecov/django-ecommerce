@@ -20,11 +20,11 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'fields': ('username', 'email')
         }),
-        ('Informações Básicas', {
+        ('Basic information', {
             'fields': ('name', 'last_login')
         }),
         (
-            'Permissões', {
+            'Permissions', {
                 'fields': (
                     'is_active', 'is_staff', 'is_superuser', 'groups',
                     'user_permissions'
