@@ -41,12 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # libs
     'widget_tweaks',
+    'paypal.standard.ipn',
     # apps
     'core',
+    'accounts',
     'catalog',
+    'checkout',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,6 +59,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'checkout.middleware.cart_item_middleware',
 ]
 
 ROOT_URLCONF = 'djangoecommerce.urls'
@@ -129,14 +134,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+MEDIA_URL = '/media/'
 
 ALLOWED_HOSTS = ['*']
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # E-mail
 EMAIL_HOST = ''
@@ -148,6 +152,28 @@ DEFAULT_FROM_EMAIL = 'admin@djangoecommerce.com'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_URL = 'logout'
+AUTH_USER_MODEL = 'accounts.User'
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.ModelBackend',
+)
+
+# Messages
+from django.contrib.messages import constants as messages_constants
+MESSAGE_TAGS = {
+    messages_constants.DEBUG: 'debug',
+    messages_constants.INFO: 'info',
+    messages_constants.SUCCESS: 'success',
+    messages_constants.WARNING: 'warning',
+    messages_constants.ERROR: 'danger',
+}
+
+PAGSEGURO_TOKEN = ''
+PAGSEGURO_EMAIL = 'vinipachecov@gmail.com'
+PAGSEGURO_SANDBOX = True
+
+PAYPAL_TEST = True
+PAYPAL_EMAIL = 'vinipachecov@gmail.com'
 
 try:
     from .local_settings import *
