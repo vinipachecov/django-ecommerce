@@ -65,3 +65,6 @@ db.sqlite3
 local_settings.py
 media/
 staticfiles/
+venv/
+nginx.conf
+supervisor.conf
