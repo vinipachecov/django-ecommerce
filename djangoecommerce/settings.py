@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Recife'
 
@@ -134,13 +134,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 # E-mail
 EMAIL_HOST = ''
@@ -169,11 +170,11 @@ MESSAGE_TAGS = {
 }
 
 PAGSEGURO_TOKEN = ''
-PAGSEGURO_EMAIL = 'vinipachecov@gmail.com'
+PAGSEGURO_EMAIL = 'contato@gilenofilho.com.br'
 PAGSEGURO_SANDBOX = True
 
 PAYPAL_TEST = True
-PAYPAL_EMAIL = 'vinipachecov@gmail.com'
+PAYPAL_EMAIL = 'contato@gilenofilho.com.br'
 
 try:
     from .local_settings import *
