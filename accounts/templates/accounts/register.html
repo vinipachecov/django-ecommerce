@@ -2,13 +2,13 @@
 
 {% load widget_tweaks %}
 
-{% block title %}Registro | {{ block.super }}{% endblock %}
+{% block title %}Registering | {{ block.super }}{% endblock %}
 
 {% block container %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <div class="page-header">
-            <h1>Registro</h1>
+            <h1>Register</h1>
         </div>
         <form class="form-horizontal" method="post">
             {% csrf_token %}
@@ -31,7 +31,7 @@
                 {% endfor %}
                 <div class="form-group">
                   <div class="col-md-9 col-md-offset-3">
-                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
                   </div>
                 </div>
             </fieldset>

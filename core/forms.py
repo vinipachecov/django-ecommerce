@@ -7,16 +7,16 @@ from django.conf import settings
 
 class ContactForm(forms.Form):
 
-    name = forms.CharField(label='Nome')
+    name = forms.CharField(label='Name')
     email = forms.EmailField(label='E-mail')
-    message = forms.CharField(label='Mensagem', widget=forms.Textarea())
+    message = forms.CharField(label='Message', widget=forms.Textarea())
 
     def send_mail(self):
         name = self.cleaned_data['name']
         email = self.cleaned_data['email']
         message = self.cleaned_data['message']
-        message = 'Nome: {0}\nE-mail:{1}\n{2}'.format(name, email, message)
+        message = 'Name: {0}\nE-mail:{1}\n{2}'.format(name, email, message)
         send_mail(
-            'Contato do Django E-Commerce', message, settings.DEFAULT_FROM_EMAIL,
+            'Contact E-Commerce Django', message, settings.DEFAULT_FROM_EMAIL,
             [settings.DEFAULT_FROM_EMAIL]
         )

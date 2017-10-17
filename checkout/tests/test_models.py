@@ -1,12 +1,9 @@
-# coding=utf-8
-
-from django.test import TestCase
-from django.conf import settings
+from django.test import Client, TestCase
 
 from model_mommy import mommy
+from django.conf import settings
 
 from checkout.models import CartItem, Order
-
 
 class CartItemTestCase(TestCase):
 
@@ -26,9 +23,10 @@ class OrderTestCase(TestCase):
         self.cart_item = mommy.make(CartItem)
         self.user = mommy.make(settings.AUTH_USER_MODEL)
 
+
     def test_create_order(self):
         Order.objects.create_order(self.user, [self.cart_item])
-        self.assertEquals(Order.objects.count(), 1)
+        self.assertEquals(Order.objects.count(),1)
         order = Order.objects.get()
         self.assertEquals(order.user, self.user)
         order_item = order.items.get()

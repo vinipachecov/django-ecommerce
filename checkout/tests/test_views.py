@@ -1,4 +1,3 @@
-# coding=utf-8
 
 from django.test import Client, TestCase
 from django.core.urlresolvers import reverse
@@ -8,14 +7,14 @@ from model_mommy import mommy
 
 from checkout.models import CartItem
 
-
+# test if we can add something to the cart item
 class CreateCartItemTestCase(TestCase):
 
     def setUp(self):
         self.product = mommy.make('catalog.Product')
         self.client = Client()
         self.url = reverse(
-            'checkout:create_cartitem', kwargs={'slug': self.product.slug}
+        'checkout:create_cartitem', kwargs={'slug': self.product.slug}
         )
 
     def tearDown(self):
@@ -24,8 +23,8 @@ class CreateCartItemTestCase(TestCase):
 
     def test_add_cart_item_simple(self):
         response = self.client.get(self.url)
-        redirect_url = reverse('checkout:cart_item')
-        self.assertRedirects(response, redirect_url)
+        red_url = reverse('checkout:cart_item')
+        self.assertRedirects(response, red_url)
         self.assertEquals(CartItem.objects.count(), 1)
 
     def test_add_cart_item_complex(self):
@@ -33,7 +32,6 @@ class CreateCartItemTestCase(TestCase):
         response = self.client.get(self.url)
         cart_item = CartItem.objects.get()
         self.assertEquals(cart_item.quantity, 2)
-
 
 class CheckoutViewTestCase(TestCase):
 
@@ -45,11 +43,13 @@ class CheckoutViewTestCase(TestCase):
         self.client = Client()
         self.checkout_url = reverse('checkout:checkout')
 
-    def test_checkou_view(self):
+
+    def test_checkout_view(self):
         response = self.client.get(self.checkout_url)
         redirect_url = '{}?next={}'.format(
-            reverse(settings.LOGIN_URL), self.checkout_url
+            reverse(settings.LOGIN_URL), reverse('checkout:checkout')
         )
+        # is the user being redirected to login?
         self.assertRedirects(response, redirect_url)
         self.client.login(username=self.user.username, password='123')
         self.cart_item.cart_key = self.client.session.session_key
