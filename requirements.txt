@@ -1,5 +1,5 @@
 dj-database-url==0.4.1
-Django==1.96
+Django==1.9.6
 django-paypal
 gunicorn==19.4.5
 psycopg2==2.7.3
