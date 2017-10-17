@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-     'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'checkout',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Recife'
 
@@ -153,28 +153,6 @@ DEFAULT_FROM_EMAIL = 'admin@djangoecommerce.com'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_URL = 'logout'
-
-
-STATIC_URL = '/static/'
-
-MEDIA_URL = '/media/'
-
-ALLOWED_HOSTS = ['*']
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# E-mail
-EMAIL_HOST = ''
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'admin@djangoecommerce.com'
-
-# auth
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'index'
-LOGOUT_URL = 'logout'
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -192,12 +170,11 @@ MESSAGE_TAGS = {
 }
 
 PAGSEGURO_TOKEN = ''
-PAGSEGURO_EMAIL = 'vinipachecov@gmail.com'
+PAGSEGURO_EMAIL = 'contato@gilenofilho.com.br'
 PAGSEGURO_SANDBOX = True
 
 PAYPAL_TEST = True
-PAYPAL_EMAIL = 'vinipachecov@gmail.com'
-
+PAYPAL_EMAIL = 'contato@gilenofilho.com.br'
 
 try:
     from .local_settings import *
