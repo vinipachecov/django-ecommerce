@@ -1,36 +1,12 @@
-# Django Ecommerce
-Loja virtual - Projeto de didático utilizado para [meu curso de Django](https://www.udemy.com/construa-um-e-commerce-com-python-3-e-django/?couponCode=github)
+# djangoecommerce
+Project used during the Udemy Course - Construa um Ecommerce com Python 3 e Django
 
-![image](https://cloud.githubusercontent.com/assets/5832193/17952257/3ee3156e-6a3f-11e6-8add-6eeccbf68e3c.png)
+# Project Requirements
 
-## Instalação
+* Django 1.10
+* Python 3.5.2
 
-### Clone o projeto
-```
-git clone https://github.com/gileno/djangoecommerce
-cd djangoecommerce
-```
+# App information
+* Testing Site http://vini-ecommerce.herokuapp.com/  
+* Nginx and supervisor for running in the EC2 instance
 
-### virtualenv
-```
-virtualenv env -p python3
-```
-Linux
-```
-source env/bin/activate
-```
-Windows
-```
-env\Scripts\activate.bat
-```
-
-
-
-## Instale as dependencias
-```
-pip install -r requirements.txt
-python manage.py runserver
-```
-
-## Video aula
-[Construa um e-commerce com python3 e Django](https://www.udemy.com/construa-um-e-commerce-com-python-3-e-django/?couponCode=github)
