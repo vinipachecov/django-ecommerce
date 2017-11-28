@@ -25,7 +25,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = os.getenv('SECRET_KEY', '123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # libs
     'widget_tweaks',
     'paypal.standard.ipn',
+    'easy_thumbnails',
     # apps
     'core',
     'accounts',
@@ -174,6 +175,15 @@ PAGSEGURO_SANDBOX = True
 
 PAYPAL_TEST = True
 PAYPAL_EMAIL = 'vinipachecov@gmail.com'
+
+
+#thumbnails
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'product_image': {'size': (285,160), 'crop':True},
+    },
+}
 
 try:
     from .local_settings import *
