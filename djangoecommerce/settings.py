@@ -208,6 +208,8 @@ THUMBNAIL_ALIASES = {
     },
 }
 
+THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+
 try:
     from .local_settings import *
 except ImportError:
