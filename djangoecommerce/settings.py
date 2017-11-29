@@ -25,7 +25,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = os.getenv('SECRET_KEY', '123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -188,10 +188,10 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
 AWS_STORAGE_BUCKET_NAME = 'viniecommerce'
 AWS_S3_CUSTOM_DOMAIN = 's3.amazonaws.com/%s' % AWS_STORAGE_BUCKET_NAME
 
-STATICFILES_STORAGE = 'viniecommerce.s3util.StaticStorage'
+STATICFILES_STORAGE = 'djangoecommerce.s3util.StaticStorage'
 STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
 
-DEFAULT_FILE_STORAGE = 'viniecommerce.s3util.MediaStorage'
+DEFAULT_FILE_STORAGE = 'djangoecommerce.s3util.MediaStorage'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 
 AWS_HEADERS = {
