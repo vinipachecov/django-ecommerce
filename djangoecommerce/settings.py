@@ -176,12 +176,35 @@ PAGSEGURO_SANDBOX = True
 PAYPAL_TEST = True
 PAYPAL_EMAIL = 'vinipachecov@gmail.com'
 
+# AWS
+STATICFILES_LOCATION = 'static'
+MEDIAFILES_LOCATION = 'media'
+
+AWS_S3_SECURE_URLS = True
+AWS_QUERYSTRING_AUTH = False
+AWS_PRELOAD_METADATA = True
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
+AWS_STORAGE_BUCKET_NAME = 'viniecommerce'
+AWS_S3_CUSTOM_DOMAIN = 's3.amazonaws.com/%s' % AWS_STORAGE_BUCKET_NAME
+
+STATICFILES_STORAGE = 'djangoecommerce.s3util.StaticStorage'
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
+
+DEFAULT_FILE_STORAGE = 'djangoecommerce.s3util.MediaStorage'
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+
+AWS_HEADERS = {
+    'x-amz-acl': 'public-read',
+    'Cache-Control': 'public, max-age=31556926'
+}
+
 
 #thumbnails
 
 THUMBNAIL_ALIASES = {
     '': {
-        'product_image': {'size': (350,250), 'crop':True},
+        'product_image': {'size': (285,160), 'crop':True},
     },
 }
 
